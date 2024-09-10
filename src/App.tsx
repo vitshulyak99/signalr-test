@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import socketService, { SocketEvent } from "./socket";
 import "./App.css";
 
@@ -7,6 +7,9 @@ export const CHAT_API_URL = "http://localhost:5214";
 const CHAT_API_HUB_URL = `${CHAT_API_URL}/hubchat`;
 
 function App() {
+  const [userId, setUserId] = useState<string>();
+  const [chatId, setChatId] = useState<string>();
+
   useEffect(() => {
     const connectSocket = async () => {
       try {
@@ -27,8 +30,8 @@ function App() {
   const join = async () => {
     try {
       await socketService.invoke(SocketEvent.join, {
-        chatId: 1,
-        userId: 6,
+        chatId: chatId,
+        userId: userId,
       });
     } catch (error) {
       console.error("Failed to join to SignalR hub:", error);
@@ -38,8 +41,8 @@ function App() {
   const leave = async () => {
     try {
       await socketService.invoke(SocketEvent.leave, {
-        chatId: 1,
-        userId: 6,
+        chatId: chatId,
+        userId: userId,
       });
     } catch (error) {
       console.error("Failed to join to SignalR hub:", error);
@@ -50,6 +53,20 @@ function App() {
     <div className="App">
       <button onClick={() => leave()}>Leave</button>
       <button onClick={() => join()}>Join</button>
+      <label>
+        userId
+        <input
+          type="text"
+          onChange={(event) => setUserId(event.target.value)}
+        />
+      </label>
+      <label>
+        chatId
+        <input
+          type="text"
+          onChange={(event) => setChatId(event.target.value)}
+        />
+      </label>
     </div>
   );
 }
