@@ -5,10 +5,11 @@ export enum SocketEvent {
   send = 'newMessage',
   join = 'joinChat',
   leave = 'leaveChat',
-  recive = 'RecieveMessage',
+  recive = 'recieveMessage',
+  notification = 'notification',
 }
 
-class SocketService {
+export class SocketService {
   private static instance: SocketService
   private connection: signalR.HubConnection | null = null
 
@@ -23,10 +24,7 @@ class SocketService {
 
   public connect(url: string): Promise<void> {
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(url, {
-        skipNegotiation: true,
-        transport: HttpTransportType.WebSockets,
-      })
+      .withUrl(url)
       .withAutomaticReconnect()
       .configureLogging(LogLevel.Debug)
       .build()
